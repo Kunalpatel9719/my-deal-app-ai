@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealMaker AI - Influencer Manager</title>
+    <style>
+        :root { --insta-grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-card { background: white; width: 100%; max-width: 450px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--insta-grad); padding: 30px; text-align: center; color: white; }
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+        .content { padding: 25px; }
+        label { font-weight: bold; font-size: 14px; color: #555; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0 20px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: #bc1888; }
+        .btn-main { width: 100%; padding: 15px; background: var(--insta-grad); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: transform 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
+        #result-box { margin-top: 20px; padding: 15px; background: #fff5f8; border-radius: 12px; border-left: 5px solid #dc2743; display: none; line-height: 1.6; font-size: 15px; }
+        .pay-lock { text-align: center; display: none; padding: 20px; background: #fffbea; border: 1px dashed #ffd700; border-radius: 12px; margin-top: 20px; }
+        .btn-pay { background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="app-card">
+    <div class="header">
+        <h1>🤝 DealMaker AI</h1>
+        <p style="font-size: 12px; opacity: 0.9;">Professional Collab Manager</p>
+    </div>
+
+    <div class="content">
+        <label>Your Niche</label>
+        <input type="text" id="niche" placeholder="e.g. Fashion, Tech, Vlogs">
+        
+        <label>Followers Count</label>
+        <input type="number" id="followers" placeholder="e.g. 25000">
+        
+        <label>Brand & Product</label>
+        <textarea id="brand" rows="2" placeholder="Brand name and what they want?"></textarea>
+
+        <button class="btn-main" id="gen-btn" onclick="startProcess()">Generate Professional Deal</button>
+
+        <div id="result-box"></div>
+
+        <div id="pay-section" class="pay-lock">
+            <p>⚠️ <b>Free Limit Reached!</b><br>Daily 2 deals are free. Get lifetime access for ₹99.</p>
+            <a id="pay-link" href="#" class="btn-pay">Pay ₹99 via UPI</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let usageCount = 0;
+
+    async function startProcess() {
+        const resultDiv = document.getElementById('result-box');
+        const paySection = document.getElementById('pay-section');
+        const genBtn = document.getElementById('gen-btn');
+
+        // Usage Check
+        if (usageCount >= 2) {
+            resultDiv.style.display = 'none';
+            paySection.style.display = 'block';
+            
+            // Setting UPI Link (Apni UPI ID yahan dalein)
+            const upiId = "YOUR_UPI_ID@okicici"; 
+            document.getElementById('pay-link').href = `upi://pay?pa=${upiId}&pn=DealMakerAI&am=99&cu=INR`;
+            return;
+        }
+
+        const niche = document.getElementById('niche').value;
+        const followers = document.getElementById('followers').value;
+        const brand = document.getElementById('brand').value;
+
+        if(!niche || !followers || !brand) {
+            alert("Please fill all details!");
+            return;
+        }
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = "<b>DealMaker AI is analyzing the brand...</b>";
+        genBtn.disabled = true;
+
+        // API Configuration
+        const API_KEY = "AIzaSyAWNr6-7BlOqFxrcoCwxiJpCb8P_HwjuI4"; 
+        const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+https://razorpay.me/@niogo?amount=CVDUr6Uxp2FOGZGwAHntNg%3D%3D
+        try {
+            const response = await fetch(URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: `Act as 'DealMaker AI', a professional talent manager. Never mention Google or Gemini. An influencer with ${followers} followers in ${niche} niche wants to collab with ${brand}. 
+                            Output format:
+                            1. **Professional Pitch (Hinglish)**: [A catchy DM/Email]
+                            2. **Fair Price**: [Suggested INR range]
+                            3. **Content Strategy**: [2 unique ideas for the brand]`
+                        }]
+                    }]
+                })
+            });
+
+            const data = await response.json();
+            const output = data.candidates[0].content.parts[0].text;
+            
+            resultDiv.innerText = output;
+            usageCount++; // Increment Usage
+            genBtn.disabled = false;
+
+        } catch (error) {
+            resultDiv.innerText = "Error: Check your connection or API Key.";
+            genBtn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
