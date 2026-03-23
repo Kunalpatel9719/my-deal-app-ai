@@ -102,22 +102,36 @@
                             3. **Content Strategy**: [2 unique ideas for the brand]`
                         }]
                     }]
-                })
-            });
+                
+                    const data = await response.json();
+        const output = data.candidates[0].content.parts[0].text;
 
-            const data = await response.json();
-            const output = data.candidates[0].content.parts[0].text;
-            
-            resultDiv.innerText = output;
-            usageCount++; // Increment Usage
-            genBtn.disabled = false;
+        // Result dikhane ke liye ye line sahi honi chahiye
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<div style="white-space: pre-wrap;">${output}</div>`;
+        
+        usageCount++; 
+        genBtn.disabled = false;
 
-        } catch (error) {
-            resultDiv.innerText = "Error: Check your connection or API Key.";
-            genBtn.disabled = false;
-        }
+    } catch (error) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerText = "Error: Check your API Key or Connection.";
+        genBtn.disabled = false;
     }
-</script>
+}
+
+
+            
+            
+            
+            
+            
+
+        
+            
+        
+    
+
 
 </body>
 </html>
