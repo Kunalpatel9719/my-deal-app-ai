@@ -83,8 +83,10 @@
         genBtn.disabled = true;
 
         // API Configuration
-        const API_KEY = ".
-            AIzaSyDQJbl6C99bHYGzLlDshcO9vUCU9qTKgNA"; 
+        const API_KEY = "AIzaSyDQJbl6C99bHYGzLlDshc09v..."; // Apni poori key yahan rehne dein
+        const URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+
+
         const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
         try {
             const response = await fetch(URL, {
